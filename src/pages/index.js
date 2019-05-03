@@ -2,9 +2,11 @@ import React from "react"
 import Form from "../components/Form"
 
 const IndexPage = () => (
-    <div>
+
+  <div>
     <Form />
-    <p>testing commit</p>
+    <p>This is a test to the master branch</p>
+  </div>
 )
 
 export default IndexPage
