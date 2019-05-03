@@ -12,6 +12,7 @@ import {
 } from "./formStyles";
 import { withFormik } from "formik";
 import * as Yup from "yup";
+import * as emailjs from 'emailjs-com';
 
 const SignUp = ({
   values,
@@ -19,7 +20,8 @@ const SignUp = ({
   handleBlur,
   handleChange,
   handleSubmit,
-  touched
+  touched,
+  isSubmitting
 }) => (
   <FormSectionWrapper>
     <FormText>Hey! Send me all the offers!</FormText>
@@ -84,7 +86,7 @@ const SignUp = ({
           onBlur={handleBlur}
         />
       </label>
-      <SubmitButton type="Submit">submit</SubmitButton>
+      <SubmitButton type="Submit" disabled={isSubmitting}>submit</SubmitButton>
     </FormWrapper>
   </FormSectionWrapper>
 );
@@ -107,13 +109,23 @@ const Form = withFormik({
       .required("Please give us consent to contact you")
   }),
 
-  handleSubmit: (values, { setSubmitting, resetForm }) => {
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      setSubmitting(false);
-    }, 1000);
-    console.log(values);
-    resetForm({});
+  handleSubmit: (values, {setSubmitting, resetForm }) => {
+      const service_id = 'nick_email_service';
+      const template_id = 'template_SQfNImnm';
+      const user_id = 'user_37B2qmN4ljLbmrOLyQTzr';
+      const template_params = {
+          userName: values.name,
+          userEmail: values.email
+      };
+
+      emailjs.send(service_id, template_id, template_params, user_id)
+          .then(function (response) {
+              alert("We've received your request and we'll respond ASAP");
+              resetForm();
+          }, function (error) {
+              alert("Process failed. Please try again.");
+              console.log('Email sending failed', error);
+          });
   },
 
   displayName: "Basic Form"
